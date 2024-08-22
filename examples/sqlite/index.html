@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sensor Data Analysis Tool</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+      #queryInput {
+        width: 100%;
+        height: 100px;
+      }
+      #visualizationForm {
+        margin-top: 20px;
+      }
+      #visualizationImage {
+        max-width: 100%;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Sensor Data Analysis Tool</h1>
+
+    <h2>Query Data</h2>
+    <textarea id="queryInput" placeholder="Enter your SQL query here...">
+SELECT sensor_id, AVG(temperature) as avg_temp
+FROM sensor_data
+GROUP BY sensor_id
+ORDER BY sensor_id
+    </textarea>
+    <button onclick="queryData()">Run Query</button>
+    <pre id="queryResult"></pre>
+
+    <h2>Visualize Sensor Data (Single Day)</h2>
+    <form id="visualizationForm">
+      <label for="sensorId">Sensor ID:</label>
+      <input type="number" id="sensorId" min="0" max="4" value="0" />
+      <label for="date">Date:</label>
+      <input type="date" id="date" value="2023-01-01" />
+      <label for="dataType">Data Type:</label>
+      <select id="dataType">
+        <option value="temperature">Temperature</option>
+        <option value="humidity">Humidity</option>
+        <option value="pressure">Pressure</option>
+      </select>
+      <button type="button" onclick="visualizeSensorData()">Visualize</button>
+    </form>
+    <img id="visualizationImage" />
+
+    <script>
+      async function queryData() {
+        const query = document.getElementById("queryInput").value;
+        try {
+          const response = await axios.post("/api/query", { query });
+          document.getElementById("queryResult").textContent = JSON.stringify(
+            response.data,
+            null,
+            2
+          );
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while querying data.");
+        }
+      }
+
+      async function visualizeSensorData() {
+        const sensorId = document.getElementById("sensorId").value;
+        const date = document.getElementById("date").value;
+        const dataType = document.getElementById("dataType").value;
+
+        try {
+          const response = await axios.post("/api/visualize", {
+            sensor_id: sensorId,
+            date: date,
+            data_type: dataType,
+          });
+          document.getElementById(
+            "visualizationImage"
+          ).src = `data:image/png;base64,${response.data.image}`;
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while visualizing data.");
+        }
+      }
+    </script>
+  </body>
+</html>
