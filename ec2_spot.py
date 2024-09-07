@@ -38,7 +38,7 @@ def get_user_data(ecr_image_uri, env_vars):
 
     echo "Step 5: Pulling Docker image"
     docker pull --platform linux/amd64 $ECR_URI
-    docker pull --platform linux/amd64 363187237379.dkr.ecr.us-east-1.amazonaws.com/spotty-monitoring:latest
+    docker pull --platform linux/amd64 omkaark/spotty-monitoring:latest
     echo "Docker image pull completed"
 
     docker run -d --name main-container -p 80:80 -p 3928:3928 {env_vars_str} $ECR_URI
@@ -47,7 +47,7 @@ def get_user_data(ecr_image_uri, env_vars):
     docker run -d --name monitor-container \
         --network container:main-container \
         -v /var/run/docker.sock:/var/run/docker.sock \
-        363187237379.dkr.ecr.us-east-1.amazonaws.com/spotty-monitoring:latest
+        omkaark/spotty-monitoring:latest
     echo "Monitoring container started"
 
     echo "User data script completed successfully"

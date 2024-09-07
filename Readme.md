@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.ibb.co/2jTm04k/Screenshot-2024-09-07-at-10-27-40.png" height="150" alt="Spotty" />
+  <img src="https://github.com/omkaark/spotty-monitoring/blob/main/static/spotty.png" height="200" alt="Spotty" />
 </p>
 
 # Spotty
@@ -16,7 +16,7 @@ The following is a guide that provides step-by-step instructions on how to set u
 
 Before you begin, ensure you have the following requirements installed:
 
-- Python 3.6+
+- Python 3.8+
 - pip
 - Docker
 - AWS CLI
