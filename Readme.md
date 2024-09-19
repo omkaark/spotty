@@ -6,9 +6,9 @@
 
 ## What is it?
 
-Spotty is a Spot Container Orchestrator that I am prototyping. I have a lot more infra explorations and this tool simplifies my dev workflow.
+Spotty is a Spot Container Orchestrator that I am building. I have a lot more infra explorations and this tool simplifies my dev workflow.
 
-Yes... I know... Kubernetes and a bunch of other tools let people do this. So why did I build it? for fun! There is more than meets the eye when building something like this and I learned a lot. I have a lot more in the pipeline and that will be out in due time.
+Yes... I know... Kubernetes and a bunch of other tools let people do this. So why did I build it? Spotty makes non-critical infrastructure cheaper, provisioning simpler and setup faster.
 
 The following is a guide that provides step-by-step instructions on how to set up and run self-hosted Spotty.
 

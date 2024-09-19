@@ -10,6 +10,11 @@
       href="https://cdn.jsdelivr.net/npm/@heroicons/v1/solid@1.0.6/20/solid.min.css"
       rel="stylesheet"
     />
+    <style>
+      .app-title {
+        font-family: monospace;
+      }
+    </style>
     <script>
       tailwind.config = {
         darkMode: "class",
@@ -49,218 +54,136 @@
         </div>
       </nav>
 
-      <div class="max-w-7xl mx-auto pt-6 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-      </div>
+      <header class="bg-white shadow">
+        <div
+          class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between"
+        >
+          <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+          <button
+            type="button"
+            onclick="openAddAppModal()"
+            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Add Service
+          </button>
+        </div>
+      </header>
 
       <main>
         <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div class="px-4 sm:px-0">
-            <div
-              id="ecr-form"
-              class="hidden bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200"
-            >
-              <div class="px-4 py-5 sm:p-6">
-                <h2 class="text-lg leading-6 font-medium text-gray-900">
-                  Set ECR Image URI and Instance Prefix
-                </h2>
-                <div class="mt-2 max-w-xl text-sm text-gray-500">
-                  <p>
-                    Enter the ECR Image URI and Instance Prefix to get started.
-                  </p>
-                </div>
-                <form class="mt-5 sm:flex sm:items-center">
-                  <div class="w-full sm:max-w-xs">
-                    <label for="ecr-uri" class="sr-only">ECR Image URI</label>
-                    <input
-                      type="text"
-                      name="ecr-uri"
-                      id="ecr-uri"
-                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                      placeholder="Enter ECR Image URI"
-                    />
-                  </div>
-                  <div class="w-full sm:max-w-xs mt-3 sm:mt-0 sm:ml-3">
-                    <label for="instance-prefix" class="sr-only"
-                      >Instance Prefix</label
-                    >
-                    <input
-                      type="text"
-                      name="instance-prefix"
-                      id="instance-prefix"
-                      class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                      placeholder="Enter Instance Prefix"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onclick="setEcrUriAndPrefix()"
-                    class="mt-3 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                  >
-                    Submit
-                  </button>
-                </form>
-              </div>
-            </div>
-
-            <div id="instance-manager" class="hidden">
-              <div class="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                  <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                      Estimated Running Cost
-                    </h3>
-                    <div class="mt-2 max-w-xl text-sm text-gray-500">
-                      <p>Current cost of all running instances.</p>
-                    </div>
-                    <div class="mt-5">
-                      <div
-                        class="text-3xl font-semibold text-gray-900"
-                        id="estimated-running-cost"
-                      >
-                        $0.00
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="bg-white overflow-hidden shadow rounded-lg">
-                  <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900">
-                      Total Project Cost
-                    </h3>
-                    <div class="mt-2 max-w-xl text-sm text-gray-500">
-                      <p>Cumulative cost of all instances.</p>
-                    </div>
-                    <div class="mt-5">
-                      <div
-                        class="text-3xl font-semibold text-gray-900"
-                        id="total-project-cost"
-                      >
-                        $0.00
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200"
-              >
+          <div class="px-4 py-6 sm:px-0">
+            <div class="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
-                  <h2 class="text-lg leading-6 font-medium text-gray-900">
-                    Instance Manager
-                  </h2>
-                  <div class="mt-2 text-xs text-gray-500">
-                    <p id="ecr-uri-display"></p>
-                    <p id="instance-prefix-display"></p>
+                  <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    Estimated Running Cost
+                  </h3>
+                  <div class="mt-2 max-w-xl text-sm text-gray-500">
+                    <p>Current cost of all running instances.</p>
                   </div>
                   <div class="mt-5">
-                    <button
-                      type="button"
-                      onclick="scaleUp()"
-                      class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    <div
+                      class="text-3xl font-semibold text-gray-900"
+                      id="estimated-running-cost"
                     >
-                      <svg
-                        class="-ml-1 mr-2 h-5 w-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                      Add Instance
-                    </button>
-                    <button
-                      type="button"
-                      onclick="openEnvSidebar()"
-                      class="ml-2 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    >
-                      <svg
-                        class="-ml-1 mr-2 h-5 w-5"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm11 1H6v8l4-2 4 2V6z"
-                          clip-rule="evenodd"
-                        />
-                      </svg>
-                      Env Vars
-                    </button>
+                      $0.00
+                    </div>
                   </div>
                 </div>
+              </div>
+              <div class="bg-white overflow-hidden shadow rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
-                  <div class="flex flex-col">
-                    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-                      <div
-                        class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
-                      >
-                        <div
-                          class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
-                        >
-                          <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                              <tr>
-                                <th
-                                  scope="col"
-                                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Instance Name
-                                </th>
-                                <th
-                                  scope="col"
-                                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Instance ID
-                                </th>
-                                <th
-                                  scope="col"
-                                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Public IP
-                                </th>
-                                <th
-                                  scope="col"
-                                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Spot Price
-                                </th>
-                                <th
-                                  scope="col"
-                                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Time Passed
-                                </th>
-                                <th
-                                  scope="col"
-                                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                                >
-                                  Actions
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody
-                              id="instance-list"
-                              class="bg-white divide-y divide-gray-200"
-                            ></tbody>
-                          </table>
-                        </div>
-                      </div>
+                  <h3 class="text-lg leading-6 font-medium text-gray-900">
+                    Total Project Cost
+                  </h3>
+                  <div class="mt-2 max-w-xl text-sm text-gray-500">
+                    <p>Cumulative cost of all instances.</p>
+                  </div>
+                  <div class="mt-5">
+                    <div
+                      class="text-3xl font-semibold text-gray-900"
+                      id="total-project-cost"
+                    >
+                      $0.00
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            <div id="app-managers"></div>
           </div>
         </div>
       </main>
 
+      <!-- Add App Modal -->
+      <div
+        id="add-app-modal"
+        class="fixed z-10 inset-0 overflow-y-auto"
+        aria-labelledby="modal-title"
+        role="dialog"
+        aria-modal="true"
+        style="display: none"
+      >
+        <div
+          class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+        >
+          <div
+            class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+            aria-hidden="true"
+          ></div>
+          <span
+            class="hidden sm:inline-block sm:align-middle sm:h-screen"
+            aria-hidden="true"
+            >&#8203;</span
+          >
+          <div
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+          >
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <h3
+                class="text-lg leading-6 font-medium text-gray-900"
+                id="modal-title"
+              >
+                Add New App
+              </h3>
+              <div class="mt-2">
+                <input
+                  type="text"
+                  id="new-app-name"
+                  placeholder="App Name (no spaces)"
+                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <input
+                  type="text"
+                  id="new-app-ecr-uri"
+                  placeholder="ECR Image URI"
+                  class="mt-3 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+            </div>
+            <div
+              class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse"
+            >
+              <button
+                type="button"
+                onclick="addNewApp()"
+                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Add App
+              </button>
+              <button
+                type="button"
+                onclick="closeAddAppModal()"
+                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Environment Variables Sidebar -->
       <div
         id="env-sidebar"
         class="fixed inset-0 overflow-hidden"
@@ -354,6 +277,7 @@
         </div>
       </div>
 
+      <!-- Instance Graphs Slide Over -->
       <div
         id="slide-over"
         class="fixed inset-0 overflow-hidden"
@@ -429,9 +353,7 @@
 
     <script>
       let state = {
-        ecr_image_uri: null,
-        instance_prefix: null,
-        instances: [],
+        apps: {},
         total_cost: 0,
       };
 
@@ -449,114 +371,200 @@
       }
 
       function renderApp() {
-        if (!state.ecr_image_uri) {
-          document.getElementById("ecr-form").style.display = "block";
-          document.getElementById("instance-manager").style.display = "none";
-        } else {
-          document.getElementById("ecr-form").style.display = "none";
-          document.getElementById("instance-manager").style.display = "block";
-          document.getElementById(
-            "ecr-uri-display"
-          ).textContent = `ECR Image URI: ${state.ecr_image_uri}`;
-          document.getElementById(
-            "instance-prefix-display"
-          ).textContent = `Instance Prefix: ${state.instance_prefix}`;
-          renderInstanceTable();
-        }
-      }
+        const appManagersContainer = document.getElementById("app-managers");
+        appManagersContainer.innerHTML = "";
 
-      function renderInstanceTable() {
-        const tableBody = document.getElementById("instance-list");
-        tableBody.innerHTML = "";
-        state.instances.forEach((instance) => {
-          const row = tableBody.insertRow();
-          row.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${
-              instance.name
-            }</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
-              instance.id
-            }</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
-              instance.ip || "Setting up..."
-            }</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <span class="px-2 inline-flex text-s leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                    $${instance.spot_price}
-                    </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="time-${
-              instance.id
-            }"></td>
-            <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
-              <button onclick="showGraph('${
-                instance.id
-              }')" class="text-indigo-600 hover:text-indigo-900 mr-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
-                      <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
-                  </svg>
+        Object.entries(state.apps).forEach(([appName, appData]) => {
+          const appManager = document.createElement("div");
+          appManager.className =
+            "mt-8 bg-white overflow-hidden shadow rounded-lg divide-y divide-gray-200";
+          appManager.innerHTML = `
+          <div class="px-4 py-5 sm:p-6">
+            <h2 class="text-lg leading-6 font-medium text-gray-900"><span class="app-title">${appName}</span> Instance Manager</h2>
+            <div class="mt-2 text-xs text-gray-500">
+              <p>ECR Image URI: ${appData.ecr_image_uri}</p>
+            </div>
+            <div class="mt-5">
+              <button
+                type="button"
+                onclick="scaleUp('${appName}')"
+                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                <svg
+                  class="-ml-1 mr-2 h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                Add Instance
               </button>
-              <button onclick="deleteInstance('${
-                instance.id
-              }')" class="text-red-600 hover:text-red-900">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                  </svg>
+              <button
+                type="button"
+                onclick="openEnvSidebar('${appName}')"
+                class="ml-2 inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              >
+                <svg
+                  class="-ml-1 mr-2 h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm11 1H6v8l4-2 4 2V6z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                Env Vars
               </button>
-          </td>`;
+            </div>
+          </div>
+          <div class="px-4 py-5 sm:p-6">
+            <div class="flex flex-col">
+              <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                  <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-200">
+                      <thead class="bg-gray-50">
+                        <tr>
+                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instance Name</th>
+                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instance ID</th>
+                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Public IP</th>
+                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Spot Price</th>
+                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time Passed</th>
+                          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody id="instance-list-${appName}" class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+          appManagersContainer.appendChild(appManager);
+          renderInstanceTable(appName);
         });
       }
 
-      function setEcrUriAndPrefix() {
-        const ecrUri = document.getElementById("ecr-uri").value;
-        const instancePrefix = document.getElementById("instance-prefix").value;
-        fetch("/set_ecr_uri_and_prefix", {
+      function renderInstanceTable(appName) {
+        const tableBody = document.getElementById(`instance-list-${appName}`);
+        tableBody.innerHTML = "";
+        state.apps[appName].instances.forEach((instance) => {
+          const row = tableBody.insertRow();
+          row.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${
+            instance.name
+          }</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
+            instance.id
+          }</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${
+            instance.ip || "Setting up..."
+          }</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <span class="px-2 inline-flex text-s leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                  $${instance.spot_price}
+              </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" id="time-${
+            instance.id
+          }"></td>
+          <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
+            <button onclick="showGraph('${
+              instance.id
+            }')" class="text-indigo-600 hover:text-indigo-900 mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                </svg>
+            </button>
+            <button onclick="deleteInstance('${appName}', '${
+            instance.id
+          }')" class="text-red-600 hover:text-red-900">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </td>`;
+        });
+      }
+
+      function openAddAppModal() {
+        document.getElementById("add-app-modal").style.display = "block";
+      }
+
+      function closeAddAppModal() {
+        document.getElementById("add-app-modal").style.display = "none";
+      }
+
+      function addNewApp() {
+        const appName = document.getElementById("new-app-name").value.trim();
+        const ecrUri = document.getElementById("new-app-ecr-uri").value.trim();
+
+        if (!appName || !ecrUri) {
+          alert("Please fill in both App Name and ECR Image URI.");
+          return;
+        }
+
+        if (appName.includes(" ")) {
+          alert("App Name should not contain spaces.");
+          return;
+        }
+
+        fetch("/add_app", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
-          body: `ecr_uri=${encodeURIComponent(
-            ecrUri
-          )}&instance_prefix=${encodeURIComponent(instancePrefix)}`,
+          body: `app_name=${encodeURIComponent(
+            appName
+          )}&ecr_uri=${encodeURIComponent(ecrUri)}`,
         })
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
+              closeAddAppModal();
               updateState();
+            } else {
+              alert(data.error || "Failed to add app. Please try again.");
             }
           });
       }
 
-      function scaleUp() {
-        fetch("/scale_up")
+      function scaleUp(appName) {
+        fetch(`/scale_up/${appName}`)
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
               updateState();
+            } else {
+              alert(
+                data.error || "Failed to create instance. Please try again."
+              );
             }
           });
       }
 
-      function deleteInstance(instanceId) {
+      function deleteInstance(appName, instanceId) {
         if (confirm("Are you sure you want to delete this instance?")) {
-          const instance = state.instances.find(
-            (inst) => inst.id === instanceId
-          );
-          if (instance) {
-            const currentTime = Math.floor(Date.now() / 1000);
-            const totalInstanceTime =
-              (currentTime - Math.floor(instance.time_now)) / 3600;
-            const instanceTotalCost =
-              totalInstanceTime * parseFloat(instance.spot_price);
-            state.total_cost += instanceTotalCost;
-          }
-
-          fetch(`/delete_instance/${instanceId}`)
+          fetch(`/delete_instance/${appName}/${instanceId}`)
             .then((response) => response.json())
             .then((data) => {
               if (data.success) {
                 updateState();
+              } else {
+                alert(
+                  data.error || "Failed to delete instance. Please try again."
+                );
               }
             });
         }
@@ -565,35 +573,39 @@
       function updateCosts() {
         const currentTime = Math.floor(Date.now() / 1000);
         let runningCost = 0;
-        let newTotalCost = state.total_cost;
+        let totalCost = state.total_cost; // This is the accumulated cost from terminated instances
 
-        state.instances.forEach((instance) => {
-          const timePassed = currentTime - Math.floor(instance.time_now);
-          const instanceCost =
-            (parseFloat(instance.spot_price) * timePassed) / 3600;
-          runningCost += instanceCost;
-          newTotalCost += instanceCost;
+        Object.values(state.apps).forEach((app) => {
+          app.instances.forEach((instance) => {
+            const timePassed = currentTime - Math.floor(instance.time_now);
+            const instanceCost =
+              (parseFloat(instance.spot_price) * timePassed) / 3600;
+            runningCost += instanceCost;
+          });
         });
 
-        const estimatedRunningCostElement = document.getElementById(
-          "estimated-running-cost"
-        );
-        estimatedRunningCostElement.textContent = `$${runningCost.toFixed(6)}`;
+        // Add the running cost to the total cost
+        totalCost += runningCost;
 
-        const totalProjectCostElement =
-          document.getElementById("total-project-cost");
-        totalProjectCostElement.textContent = `$${newTotalCost.toFixed(6)}`;
+        document.getElementById(
+          "estimated-running-cost"
+        ).textContent = `$${runningCost.toFixed(6)}`;
+        document.getElementById(
+          "total-project-cost"
+        ).textContent = `$${totalCost.toFixed(6)}`;
       }
 
       function updateTime() {
         const currentTime = Math.floor(Date.now() / 1000);
 
-        state.instances.forEach((instance) => {
-          const timePassed = currentTime - Math.floor(instance.time_now);
-          const timeCell = document.getElementById(`time-${instance.id}`);
-          if (timeCell) {
-            timeCell.textContent = `${timePassed}s`;
-          }
+        Object.values(state.apps).forEach((app) => {
+          app.instances.forEach((instance) => {
+            const timePassed = currentTime - Math.floor(instance.time_now);
+            const timeCell = document.getElementById(`time-${instance.id}`);
+            if (timeCell) {
+              timeCell.textContent = `${timePassed}s`;
+            }
+          });
         });
 
         updateCosts();
@@ -604,7 +616,15 @@
       }
 
       function showGraph(instanceId) {
-        const instance = state.instances.find((inst) => inst.id === instanceId);
+        let instance;
+        let appName;
+        for (const [name, app] of Object.entries(state.apps)) {
+          instance = app.instances.find((inst) => inst.id === instanceId);
+          if (instance) {
+            appName = name;
+            break;
+          }
+        }
         if (!instance) return;
 
         document.getElementById(
@@ -660,7 +680,6 @@
             },
           });
         }
-
         updateCharts(instanceId);
       }
 
@@ -685,77 +704,66 @@
       }
 
       function fetchAllInstanceStats() {
-        state.instances.forEach((instance) => {
-          if (instance.ip) {
-            fetch(`/instance_stats/${instance.id}`)
-              .then((response) => response.json())
-              .then((data) => {
-                const timestamp = new Date().toLocaleTimeString();
-                if (!chartData[instance.id]) {
-                  chartData[instance.id] = { cpu: [], memory: [] };
-                }
-                chartData[instance.id].cpu.push({
-                  x: timestamp,
-                  y: data.cpu_usage_percentage,
-                });
-                chartData[instance.id].memory.push({
-                  x: timestamp,
-                  y: data.memory_usage_percentage,
-                });
+        Object.values(state.apps).forEach((app) => {
+          app.instances.forEach((instance) => {
+            if (instance.ip) {
+              fetch(`/instance_stats/${instance.id}`)
+                .then((response) => response.json())
+                .then((data) => {
+                  const timestamp = new Date().toLocaleTimeString();
+                  if (!chartData[instance.id]) {
+                    chartData[instance.id] = { cpu: [], memory: [] };
+                  }
+                  chartData[instance.id].cpu.push({
+                    x: timestamp,
+                    y: data.cpu_usage_percentage,
+                  });
+                  chartData[instance.id].memory.push({
+                    x: timestamp,
+                    y: data.memory_usage_percentage,
+                  });
 
-                if (chartData[instance.id].cpu.length > 30) {
-                  chartData[instance.id].cpu.shift();
-                  chartData[instance.id].memory.shift();
-                }
+                  if (chartData[instance.id].cpu.length > 30) {
+                    chartData[instance.id].cpu.shift();
+                    chartData[instance.id].memory.shift();
+                  }
 
-                if (
-                  document.getElementById("slide-over").style.display ===
-                    "block" &&
-                  document.getElementById("slide-over-title").textContent ===
-                    `Usage metrics for ${instance.name}`
-                ) {
-                  updateCharts(instance.id);
-                }
-              })
-              .catch((error) =>
-                console.error(
-                  `Error fetching stats for instance ${instance.id}:`,
-                  error
-                )
-              );
-          }
+                  if (
+                    document.getElementById("slide-over").style.display ===
+                      "block" &&
+                    document.getElementById("slide-over-title").textContent ===
+                      `Usage metrics for ${instance.name}`
+                  ) {
+                    updateCharts(instance.id);
+                  }
+                })
+                .catch((error) =>
+                  console.error(
+                    `Error fetching stats for instance ${instance.id}:`,
+                    error
+                  )
+                );
+            }
+          });
         });
       }
-      function toggleDarkMode() {
-        document.documentElement.classList.toggle("dark");
-      }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        updateState();
-        setInterval(updateTime, 1000);
-        setInterval(updateState, 10000);
-        setInterval(fetchAllInstanceStats, 10000);
-
-        document
-          .getElementById("darkModeToggle")
-          .addEventListener("click", toggleDarkMode);
-      });
-
-      function openEnvSidebar() {
+      function openEnvSidebar(appName) {
         document.getElementById("env-sidebar").style.display = "block";
-        loadEnvVars();
+        loadEnvVars(appName);
       }
 
       function closeEnvSidebar() {
         document.getElementById("env-sidebar").style.display = "none";
       }
 
-      function loadEnvVars() {
-        fetch("/get_env_vars")
+      function loadEnvVars(appName) {
+        fetch(`/get_env_vars/${appName}`)
           .then((response) => response.json())
           .then((data) => {
             const container = document.getElementById("env-vars-container");
             container.innerHTML = "";
+            container.dataset.appName = appName;
             Object.entries(data.env_vars).forEach(([key, value], index) => {
               addEnvVar(key, value);
             });
@@ -765,15 +773,16 @@
             alert("An error occurred while loading environment variables.");
           });
       }
+
       function addEnvVar(key = "", value = "") {
         const container = document.getElementById("env-vars-container");
         const index = container.children.length;
         const envVarDiv = document.createElement("div");
         envVarDiv.className = "flex items-center mb-2";
         envVarDiv.innerHTML = `
-          <input type="text" name="env-key-${index}" value="${key}" placeholder="Key" class="border border-grey-400 p-2	env-input mr-2">
-          <input type="text" name="env-value-${index}" value="${value}" placeholder="Value" class="border border-grey-400 p-2	env-input">
-          <button onclick="removeEnvVar(this)" class="env-remove text-red-500">−</button>
+          <input type="text" name="env-key-${index}" value="${key}" placeholder="Key" class="border border-grey-400 p-2 env-input mr-2">
+          <input type="text" name="env-value-${index}" value="${value}" placeholder="Value" class="border border-grey-400 p-2 env-input">
+          <button onclick="removeEnvVar(this)" class="env-remove text-red-500 ml-2">−</button>
         `;
         container.appendChild(envVarDiv);
       }
@@ -785,6 +794,7 @@
 
       function saveEnvVars() {
         const container = document.getElementById("env-vars-container");
+        const appName = container.dataset.appName;
         const envVars = {};
         container.querySelectorAll("div.flex").forEach((div, index) => {
           const key = div.querySelector(`input[name^="env-key-"]`).value;
@@ -794,7 +804,7 @@
           }
         });
 
-        fetch("/save_env_vars", {
+        fetch(`/save_env_vars/${appName}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -815,6 +825,13 @@
             alert("An error occurred while saving environment variables.");
           });
       }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        updateState();
+        setInterval(updateTime, 1000);
+        setInterval(updateState, 10000);
+        setInterval(fetchAllInstanceStats, 10000);
+      });
     </script>
   </body>
 </html>

@@ -32,35 +32,45 @@ def index():
 @app.route('/get_state')
 def api():
     return jsonify(
-        ecr_image_uri=state_manager.get_ecr_image_uri(),
-        instance_prefix=state_manager.get_instance_prefix(),
-        instances=state_manager.get_instances(),
+        apps=state_manager.get_apps(),
         total_cost=state_manager.get_total_cost()
     )
 
-@app.route('/set_ecr_uri_and_prefix', methods=['POST'])
-def set_ecr_uri_and_prefix():
+@app.route('/add_app', methods=['POST'])
+def add_app():
+    app_name = request.form['app_name']
     ecr_uri = request.form['ecr_uri']
-    instance_prefix = request.form['instance_prefix']
-    state_manager.update_ecr_uri_and_prefix(ecr_uri, instance_prefix)
-    return jsonify(success=True)
+    if state_manager.add_app(app_name, ecr_uri):
+        return jsonify(success=True)
+    else:
+        return jsonify(error="App already exists"), 400
 
-@app.route('/scale_up')
-def scale_up():
-    if not state_manager.get_ecr_image_uri() or not state_manager.get_instance_prefix():
-        return jsonify(error="ECR URI or Instance Prefix not set"), 400
+@app.route('/update_ecr_uri', methods=['POST'])
+def update_ecr_uri():
+    app_name = request.form['app_name']
+    ecr_uri = request.form['ecr_uri']
+    if state_manager.update_ecr_uri(app_name, ecr_uri):
+        return jsonify(success=True)
+    else:
+        return jsonify(error="App not found"), 404
+
+@app.route('/scale_up/<app_name>')
+def scale_up(app_name):
+    app = state_manager.get_app(app_name)
+    if not app:
+        return jsonify(error="App not found"), 404
     
     usage, quota = check_spot_quotas()
     if quota != "Unknown" and usage >= quota:
         cleanup_spot_requests()  # clean up any lingering requests
         return jsonify(error="Spot Instance quota reached. Please try again later or request a quota increase."), 429
     
-    instance_counter = state_manager.get_instance_counter()
-    instance_name = f"{state_manager.get_instance_prefix()}-{instance_counter + 1}"
-    env_vars = state_manager.get_env_vars()
-    instance_dict = create_instance(state_manager.get_ecr_image_uri(), instance_name, env_vars)
+    instance_counter = state_manager.get_instance_counter(app_name)
+    instance_name = f"{app_name}-{instance_counter + 1}"
+    env_vars = state_manager.get_env_vars(app_name)
+    instance_dict = create_instance(app['ecr_image_uri'], instance_name, env_vars)
     if instance_dict and instance_dict['id']:
-        state_manager.add_instance(instance_dict)
+        state_manager.add_instance(app_name, instance_dict)
         return jsonify(success=True, instance=instance_dict)
     else:
         return jsonify(success=False, error="Failed to create instance. Please check logs for more details."), 500
@@ -70,40 +80,46 @@ def cleanup():
     cleanup_spot_requests()
     return jsonify(success=True, message="Cleanup completed")
 
-@app.route('/delete_instance/<instance_id>')
-def delete_instance(instance_id):
-    if state_manager.remove_instance(instance_id):
+@app.route('/delete_instance/<app_name>/<instance_id>')
+def delete_instance(app_name, instance_id):
+    if state_manager.remove_instance(app_name, instance_id):
         terminate_instance(instance_id)
         return jsonify(success=True, terminated_instance_id=instance_id)
     else:
         return jsonify(error="Instance not found"), 404
 
-@app.route('/instances')
-def get_instances():
-    return jsonify(instances=state_manager.get_instances())
+@app.route('/instances/<app_name>')
+def get_instances(app_name):
+    return jsonify(instances=state_manager.get_instances(app_name))
 
 @app.route('/instance_stats/<instance_id>')
 def instance_stats(instance_id):
-    instance = next((inst for inst in state_manager.get_instances() if inst['id'] == instance_id), None)
-    if not instance:
-        return jsonify({"error": "Instance not found"}), 404
-    
+    for app in state_manager.get_apps().values():
+        instance = next((inst for inst in app['instances'] if inst['id'] == instance_id), None)
+        if instance:
+            try:
+                response = requests.get(f"http://{instance['ip']}:3928/stats", timeout=5)
+                return jsonify(response.json())
+            except requests.RequestException as e:
+                return jsonify({"error": str(e)}), 500
+    return jsonify({"error": "Instance not found"}), 404
+
+@app.route('/get_env_vars/<app_name>')
+def get_env_vars(app_name):
     try:
-        response = requests.get(f"http://{instance['ip']}:3928/stats", timeout=5)
-        return jsonify(response.json())
-    except requests.RequestException as e:
-        return jsonify({"error": str(e)}), 500
+        env_vars = state_manager.get_env_vars(app_name)
+        return jsonify(env_vars=env_vars)
+    except ValueError as e:
+        return jsonify(error=str(e)), 404
 
-@app.route('/get_env_vars')
-def get_env_vars():
-    env_vars = state_manager.get_env_vars()
-    return jsonify(env_vars=env_vars)
-
-@app.route('/save_env_vars', methods=['POST'])
-def save_env_vars():
+@app.route('/save_env_vars/<app_name>', methods=['POST'])
+def save_env_vars(app_name):
     env_vars = request.json
-    state_manager.save_env_vars(env_vars)
-    return jsonify(success=True)
+    try:
+        state_manager.save_env_vars(app_name, env_vars)
+        return jsonify(success=True)
+    except ValueError as e:
+        return jsonify(error=str(e)), 404
 
 if __name__ == '__main__':
     if os.getenv('TF_INSTANCE_PROFILE_NAME'):
