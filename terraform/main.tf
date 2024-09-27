@@ -99,22 +99,12 @@ resource "aws_security_group" "main" {
   }
 }
 
-resource "aws_security_group_rule" "allow_http" {
-  type        = "ingress"
-  from_port   = 80
-  to_port     = 80
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.main.id
-}
-
-
-data "aws_ssm_parameter" "amazon_linux_2" {
-  name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
-}
+# data "aws_ssm_parameter" "amazon_linux_2" {
+#   name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
+# }
 
 output "ami_id" {
-  value     = data.aws_ssm_parameter.amazon_linux_2.value
+  value     = "ami-094be2a3a88f05366" # data.aws_ssm_parameter.amazon_linux_2.value
   sensitive = true
 }
 
